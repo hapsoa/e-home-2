@@ -1,18 +1,35 @@
 <template>
   <v-app>
     <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
+      <v-toolbar-side-icon></v-toolbar-side-icon>
+      <v-toolbar-title class="headline">
+        <span>e-home</span>
+        <!-- <span class="font-weight-light">MATERIAL DESIGN</span> -->
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn
-        flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-      >
-        <span class="mr-2">Latest Release</span>
-      </v-btn>
+      <v-toolbar-items>
+        <v-menu offset-y>
+          <v-btn
+            slot="activator"
+            color="primary"
+            dark
+          >
+            Profile
+          </v-btn>
+          <v-list>
+            <v-list-tile
+              @click=""
+            >
+              <v-list-tile-title>my page</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile
+              @click=""
+            >
+              <v-list-tile-title>logout</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </v-toolbar-items>
     </v-toolbar>
 
     <v-content>
