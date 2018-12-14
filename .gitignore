@@ -19,3 +19,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+# firebase
+src/firebase/initializingFirebase.js
+src/firebase/initializingFirebase.ts
