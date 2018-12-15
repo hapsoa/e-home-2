@@ -1,7 +1,7 @@
-// import database from './cloudFireStore';
-// import auth from './authentication';
+import database from './cloudFireStore';
+import auth from './authentication';
 
-// export default {
-//   auth,
-//   database,
-// };
+export default {
+  auth,
+  database,
+};
