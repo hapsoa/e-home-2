@@ -2,7 +2,7 @@
   <div class="diary-root">
     <nav>
       <input type="text" placeholder="search">
-      <button type="button" @click="$router.push({name: 'writing-diary'})">일기 쓰기</button>
+      <v-btn color="info" @click="$router.push({name: 'writing-diary'})">일기 쓰기</v-btn>
     </nav>
     <div class="diaries">
       <div

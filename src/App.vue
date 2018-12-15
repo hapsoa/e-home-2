@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-toolbar dense app flat>
+    <v-toolbar dense app flat v-if="$store.state.isLogin">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title class="headline" @click="$router.push({name: 'home'})">
         <span>e-home</span>
@@ -32,7 +32,7 @@
       </v-toolbar-items>
     </v-toolbar>
     
-    <v-navigation-drawer app v-model="drawer">
+    <v-navigation-drawer app v-model="drawer" v-if="$store.state.isLogin">
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
@@ -100,13 +100,13 @@ export default {
   },
   methods: {
     logout() {
-      this.$firebase.auth.logout();
+      firebase.auth.logout();
       this.$store.commit('logout');
       this.$router.push('/login');
     },
   },
   created() {
-    this.$firebase.auth.setUserOnlineListener(() => {
+    firebase.auth.setUserOnlineListener(() => {
       this.$store.commit('login');
       this.$store.commit('shotMethods');
       this.$store.commit('endLoading');
@@ -115,7 +115,7 @@ export default {
         this.$router.push('/');
       }
     });
-    this.$firebase.auth.setUserOfflineListener(() => {
+    firebase.auth.setUserOfflineListener(() => {
       this.$store.commit('logout');
       this.$store.commit('endLoading');
       this.$router.push('/login');
@@ -131,11 +131,12 @@ export default {
 body {
   margin: 0;
   padding: 0;
-
-  .v-toolbar__title {
-    cursor: pointer;
-  }
 }
+
+.v-toolbar__title {
+  cursor: pointer;
+}
+
 
 </style>
 
