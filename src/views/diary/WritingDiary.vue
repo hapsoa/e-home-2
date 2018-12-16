@@ -41,6 +41,9 @@ export default {
       width: 100%
       height: calc(100% - 80px)
       border: 1px solid #aaa
+      &:focus
+        outline: none !important;
+        border: 1px solid #ccc
     > .controller
       width: 100%
       height: 80px
