@@ -133,6 +133,12 @@ body {
   padding: 0;
 }
 
+router-view {
+  width: 100%;
+  height: 200vh;
+  overflow: hidden;
+}
+
 .v-toolbar__title {
   cursor: pointer;
 }
