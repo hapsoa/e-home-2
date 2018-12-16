@@ -12,6 +12,12 @@
         @click="lookDiary(diary.id)"
       >{{diary.title}}</div>
     </div>
+    <div class="text-xs-center">
+      <v-pagination
+        v-model="page"
+        :length="6"
+      ></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -21,6 +27,7 @@ export default {
   data() {
     return {
       diaries: {},
+      page: 1,
     };
   },
   methods: {
