@@ -42,11 +42,11 @@ export default {
     // },
   },
   async created() {
-    this.diaries = await firebase.database.getDiary();
+    const diaries: object = await firebase.database.getDiary();
 
     const temp: object[] = [];
 
-    _.forEach(this.diaries as any, (value, key) => {
+    _.forEach(diaries, (value, key) => {
       value.id = key;
       temp.push(value);
     });
