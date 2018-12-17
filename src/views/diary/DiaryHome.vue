@@ -22,11 +22,14 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
+import firebase from '@/firebase';
+
 export default {
   name: 'DiaryHome',
   data() {
     return {
-      diaries: {},
+      diaries: [] as object[],
       page: 1,
     };
   },
@@ -34,18 +37,21 @@ export default {
     lookDiary(diaryId: string) {
       this.$router.push({ name: 'diary-detail', query: { id: diaryId } });
     },
+    // getPage(pageNum: number) {
+
+    // },
   },
   async created() {
-    this.diaries = await this.$firebase.database.getDiary();
+    this.diaries = await firebase.database.getDiary();
 
-    const temp: object = [];
+    const temp: object[] = [];
 
-    this.$_.forEach(this.diaries, (value, key) => {
+    _.forEach(this.diaries as any, (value, key) => {
       value.id = key;
       temp.push(value);
     });
 
-    this.diaries = this.$_.orderBy(temp, ['date'], ['desc']);
+    this.diaries = _.orderBy(temp, ['date'], ['desc']);
 
     console.log('diaries : ', this.diaries);
   },
