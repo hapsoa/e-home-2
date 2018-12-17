@@ -6,6 +6,9 @@
 </template>
 
 <script>
+import _ from 'lodash';
+import firebase from '@/firebase';
+
 export default {
   name: 'DiaryDetail',
   // props: {
@@ -20,9 +23,18 @@ export default {
       diaryData: {},
     };
   },
-  async created() {
-    this.diaryData = await this.$firebase.database.getDiary(this.id);
-    this.diaryData.contents = this.diaryData.contents.split(/\n|\r|↵/).join('<br>');
+  methods: {
+    async initializeView() {
+      this.diaryData = await this.$firebase.database.getDiary(this.id);
+      this.diaryData.contents = this.diaryData.contents.split(/\n|\r|↵/).join('<br>');
+    }
+  },
+  created() {
+    if (!_.isNil(firebase.auth.getCurrentUser())) {
+      this.initializeView();
+    } else {
+      this.$store.commit('saveMethod', this.initializeView);
+    }
   },
 };
 </script>

@@ -105,7 +105,7 @@ export default {
       this.$router.push('/login');
     },
   },
-  created() {
+  beforeCreate() {
     firebase.auth.setUserOnlineListener(() => {
       this.$store.commit('login');
       this.$store.commit('shotMethods');

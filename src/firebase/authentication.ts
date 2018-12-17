@@ -5,11 +5,10 @@ import database from './cloudFireStore';
 const provider = new firebase.auth.GoogleAuthProvider();
 
 class Authentication {
+  private userOnlineListener: null;
+  private userOfflineListener: null;
+  private logoutListener: null;
   constructor() {
-    this.userOnlineListener = null;
-    this.userOfflineListener = null;
-    this.logoutListener = null;
-
     firebase.auth()
       .onAuthStateChanged((user) => {
         console.log('current user : ', user);
