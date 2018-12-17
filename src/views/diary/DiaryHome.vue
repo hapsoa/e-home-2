@@ -7,7 +7,7 @@
     <div class="diaries">
       <div
         class="diary"
-        v-for="(diary, index) in getPage()"
+        v-for="(diary, index) in getPage"
         :key="diary.id"
         @click="lookDiary(diary.id)"
       >{{diary.title}}</div>
@@ -15,7 +15,7 @@
     <div class="text-xs-center">
       <v-pagination
         v-model="page"
-        :length="6"
+        :length="pageLength"
       ></v-pagination>
     </div>
   </div>
@@ -31,6 +31,7 @@ export default {
     return {
       diaries: [] as object[],
       page: 1,
+      pageLength: 0,
     };
   },
   methods: {
@@ -50,17 +51,19 @@ export default {
       this.diaries = _.orderBy(temp, ['date'], ['desc']);
 
       console.log('diaries : ', this.diaries);
+      this.pageLength = Math.ceil(this.diaries.length / 10);
     },
-    getPage(pageNum: number) {
+  },
+  computed: {
+    getPage(): object[] {
       // 2면 this.dairies[10] ~ this.diaries[19] 까지만 가지고 있는 배열을 만든다.
-      const initNum = (this.page - 1) * 10;
-      const pageArray = _.slice(this.diaries, initNum, initNum + 10);
+      const initNum: number = (this.page - 1) * 10;
+      const pageArray: object[] = _.slice(this.diaries, initNum, initNum + 10);
       return pageArray;
     },
   },
   async created() {
     if (!_.isNil(firebase.auth.getCurrentUser())) {
-      console.log('asdfasdf');
       this.initializeView();
     } else {
       this.$store.commit('saveMethod', this.initializeView);
