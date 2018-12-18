@@ -40,6 +40,8 @@ export default {
     },
     async initializeView() {
       const diaries: object = await firebase.database.getDiary();
+      const diaries2: object[] = await firebase.database.getDiaryPerPage(10);
+      // console.log('diary2', diaries2);
 
       const temp: object[] = [];
 
@@ -50,7 +52,7 @@ export default {
 
       this.diaries = _.orderBy(temp, ['date'], ['desc']);
 
-      console.log('diaries : ', this.diaries);
+      // console.log('diaries : ', this.diaries);
       this.pageLength = Math.ceil(this.diaries.length / 10);
     },
   },

@@ -9,7 +9,7 @@ const settings = {
 db.settings(settings);
 
 class CloudFirestore {
-  public static loginUser(user: {uid: string}) {
+  public static loginUser(user: { uid: string }) {
     db.collection('users')
       .doc(user.uid)
       .set({
@@ -24,10 +24,10 @@ class CloudFirestore {
   }
 
   public static getUser(uid: string) {
-    const docRef = db.collection('users')
-      .doc(uid);
+    const docRef = db.collection('users').doc(uid);
 
-    docRef.get()
+    docRef
+      .get()
       .then((doc) => {
         if (doc.exists) {
           console.log('Document data:', doc.data());
@@ -46,27 +46,29 @@ class CloudFirestore {
     const user = firebase.auth().currentUser;
 
     if (!_.isNil(user)) {
-        const ref = db.collection('users').doc(user.uid).collection('memo');
+      const ref = db
+        .collection('users')
+        .doc(user.uid)
+        .collection('memo');
 
-        try {
-            const docRef = await ref.add({ memo: memoContentsString });
-            console.log('Document written with ID: ', docRef.id);
-          } catch (error) {
-            console.error('Error adding document: ', error);
-          }
+      try {
+        const docRef = await ref.add({ memo: memoContentsString });
+        console.log('Document written with ID: ', docRef.id);
+      } catch (error) {
+        console.error('Error adding document: ', error);
+      }
     } else {
-        console.error('don t have user!');
+      console.error('don t have user!');
     }
-
-
   }
 
   public static async getMemo() {
     const user = firebase.auth().currentUser;
-    const memos: {[index: string]: string} = {};
+    const memos: { [index: string]: string } = {};
 
     if (!_.isNil(user)) {
-      const querySnapshot = await db.collection('users')
+      const querySnapshot = await db
+        .collection('users')
         .doc(user.uid)
         .collection('memo')
         .get();
@@ -79,7 +81,9 @@ class CloudFirestore {
         memos[doc.id] = doc.data().memo;
       });
       console.log('memos in database : ', memos);
-    } else { console.log('no logined user'); }
+    } else {
+      console.log('no logined user');
+    }
     return memos;
   }
 
@@ -87,7 +91,11 @@ class CloudFirestore {
     const user = firebase.auth().currentUser;
 
     if (!_.isNil(user)) {
-      const memoRef = db.collection('users').doc(user.uid).collection('memo').doc(memoId);
+      const memoRef = db
+        .collection('users')
+        .doc(user.uid)
+        .collection('memo')
+        .doc(memoId);
       try {
         await memoRef.delete();
         console.log('Document successfully deleted!');
@@ -99,11 +107,14 @@ class CloudFirestore {
     }
   }
 
-  public static async setDiary(diaryData: {title: string, contents: string}) {
+  public static async setDiary(diaryData: { title: string; contents: string }) {
     const user = firebase.auth().currentUser;
 
     if (!_.isNil(user)) {
-      const ref = db.collection('users').doc(user.uid).collection('diary');
+      const ref = db
+        .collection('users')
+        .doc(user.uid)
+        .collection('diary');
       try {
         const docRef = await ref.add({
           title: diaryData.title,
@@ -122,12 +133,15 @@ class CloudFirestore {
   public static async getDiary(diaryId: string) {
     const user = firebase.auth().currentUser;
     let diary;
-    const diaries: {[index: string]: any} = {};
+    const diaries: { [index: string]: any } = {};
 
     if (!_.isNil(user)) {
       if (!_.isNil(diaryId)) {
-        const docRef = db.collection('users').doc(user.uid)
-          .collection('diary').doc(diaryId);
+        const docRef = db
+          .collection('users')
+          .doc(user.uid)
+          .collection('diary')
+          .doc(diaryId);
         try {
           const doc = await docRef.get();
           if (doc.exists) {
@@ -142,7 +156,8 @@ class CloudFirestore {
           console.log('Error getting document:', error);
         }
       } else {
-        const querySnapshot = await db.collection('users')
+        const querySnapshot = await db
+          .collection('users')
           .doc(user.uid)
           .collection('diary')
           .get();
@@ -153,9 +168,49 @@ class CloudFirestore {
         console.log('diaries in database : ', diaries);
         return diaries;
       }
-    } else { console.log('no logined user'); }
+    } else {
+      console.error('no logined user');
+    }
     return null;
   }
+
+  public static async getDiaryPerPage(pageNum: number) {
+    const user = firebase.auth().currentUser;
+    const diaries: object[] = [];
+
+    if (!_.isNil(user)) {
+      const first = await db.collection('users')
+        .doc(user.uid)
+        .collection('diary')
+        .orderBy('date')
+        .limit(10)
+        .get();
+
+      // first.forEach(doc => {
+      //   diaries.push(doc.data());
+      // });
+      // console.log('first diaries', diaries);
+
+      // console.log('docNum', first.docs[0].data());
+      const lastVisible = first.docs[first.docs.length - 1];
+      console.log('last', lastVisible);
+
+      const next = await db.collection('users')
+          .doc(user.uid)
+          .collection('diary')
+          .orderBy('date')
+          .startAfter(lastVisible)
+          .limit(10)
+          .get();
+
+      next.forEach((doc) => {
+        diaries.push(doc.data());
+      });
+      console.log('second diaries', diaries);
+    }
+  }
+
+
 }
 
 // const database = new CloudFirestore();
