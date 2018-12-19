@@ -28,7 +28,7 @@ export default {
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  padding: 250px;
+  justify-content: center;
   >button {
     margin-top: 40px;
   }
