@@ -116,9 +116,17 @@ class CloudFirestore {
         .doc(user.uid)
         .collection('diary');
       try {
+        const querySnapshot = await db.collection('users')
+                                          .doc(user.uid)
+                                          .collection('diary')
+                                          .orderBy('index', 'desc')
+                                          .limit(1)
+                                          .get();
+        const index: number = querySnapshot.docs[0].data().index + 1;
         const docRef = await ref.add({
           title: diaryData.title,
           contents: diaryData.contents,
+          index,
           date: new Date().getTime(),
         });
         console.log('Document written with ID: ', docRef.id);
@@ -178,35 +186,24 @@ class CloudFirestore {
     const user = firebase.auth().currentUser;
     const diaries: object[] = [];
 
+    console.log('pageNum', pageNum);
+
     if (!_.isNil(user)) {
       const first = await db.collection('users')
         .doc(user.uid)
         .collection('diary')
-        .orderBy('date')
+        .orderBy('index', 'desc')
+        .startAt((pageNum - 1) * 10)
         .limit(10)
         .get();
 
-      // first.forEach(doc => {
-      //   diaries.push(doc.data());
-      // });
-      // console.log('first diaries', diaries);
-
-      // console.log('docNum', first.docs[0].data());
-      const lastVisible = first.docs[first.docs.length - 1];
-      console.log('last', lastVisible);
-
-      const next = await db.collection('users')
-          .doc(user.uid)
-          .collection('diary')
-          .orderBy('date')
-          .startAfter(lastVisible)
-          .limit(10)
-          .get();
-
-      next.forEach((doc) => {
+      first.forEach((doc) => {
         diaries.push(doc.data());
       });
-      console.log('second diaries', diaries);
+      console.log('first diaries', diaries);
+
+      // console.log('docNum', first.docs[0].data());
+
     }
   }
 

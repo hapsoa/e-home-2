@@ -40,7 +40,7 @@ export default {
     },
     async initializeView() {
       const diaries: object = await firebase.database.getDiary();
-      const diaries2: object[] = await firebase.database.getDiaryPerPage(10);
+      const diaries2: object[] = await firebase.database.getDiaryPerPage(1);
       // console.log('diary2', diaries2);
 
       const temp: object[] = [];
