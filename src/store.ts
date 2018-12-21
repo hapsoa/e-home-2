@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from 'lodash';
+import firebase from '@/firebase';
 
 Vue.use(Vuex);
 
@@ -10,6 +11,7 @@ export default new Vuex.Store({
     isLogin: false,
     savedMethods: [],
     isLoading: true,
+    lastDiaryIndex: null,
   },
   mutations: {
     login(state) {
@@ -36,8 +38,18 @@ export default new Vuex.Store({
       state.isLoading = false;
       console.log('loading end');
     },
+    addLastDiaryIndex(state) {
+      if (_.isNumber(state.lastDiaryIndex)) {
+        state.lastDiaryIndex += 1;
+        console.log('success addLastIndex');
+      }
+    },
   },
   actions: {
+    async setLastDiaryIndex(context) {
+      context.state.lastDiaryIndex = await firebase.database.getDiaryLastIndex();
 
+      console.log('setted lastIndex: ', context.state.lastDiaryIndex);
+    },
   },
 });

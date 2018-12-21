@@ -25,8 +25,20 @@ export default {
   methods: {
     async sendDiary() {
       console.log('textArea : ', this.diaryContents);
+
+      if (_.isNil(this.$store.state.lastDiaryIndex)) {
+        await this.$store.dispatch('setLastDiaryIndex');
+      }
+
+      this.$firebase.database.setDiary({ 
+        title: this.diaryTitle, 
+        contents: this.diaryContents,
+        index: this.$store.state.lastDiaryIndex + 1,
+      });
+
+      this.$store.commit('addLastDiaryIndex');
+
       this.$router.push({ name: 'diary' });
-      this.$firebase.database.setDiary({ title: this.diaryTitle, contents: this.diaryContents });
     },
   },
 };

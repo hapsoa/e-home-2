@@ -107,7 +107,7 @@ class CloudFirestore {
     }
   }
 
-  public static async setDiary(diaryData: { title: string; contents: string }) {
+  public static async setDiary(diaryData: { title: string; contents: string, index: number }) {
     const user = firebase.auth().currentUser;
 
     if (!_.isNil(user)) {
@@ -116,17 +116,17 @@ class CloudFirestore {
         .doc(user.uid)
         .collection('diary');
       try {
-        const querySnapshot = await db.collection('users')
-                                          .doc(user.uid)
-                                          .collection('diary')
-                                          .orderBy('index', 'desc')
-                                          .limit(1)
-                                          .get();
-        const index: number = querySnapshot.docs[0].data().index + 1;
+        // const querySnapshot = await db.collection('users')
+        //                                   .doc(user.uid)
+        //                                   .collection('diary')
+        //                                   .orderBy('index', 'desc')
+        //                                   .limit(1)
+        //                                   .get();
+        // const index: number = querySnapshot.docs[0].data().index + 1;
         const docRef = await ref.add({
           title: diaryData.title,
           contents: diaryData.contents,
-          index,
+          index: diaryData.index,
           date: new Date().getTime(),
         });
         console.log('Document written with ID: ', docRef.id);
@@ -182,47 +182,56 @@ class CloudFirestore {
     return null;
   }
 
-  public static async getDiaryPerPage(pageNum: number) {
+  public static async getDiaryPerPage(pageData
+    : {pageNumber: number, lastDiaryIndex: number}): object[] {
     const user = firebase.auth().currentUser;
     const diaries: object[] = [];
 
-    console.log('pageNum', pageNum);
-
+    console.log('pageNumber', pageData.pageNumber);
+    console.log('lastDiaryIndex', pageData.lastDiaryIndex);
     if (!_.isNil(user)) {
       const first = await db.collection('users')
         .doc(user.uid)
         .collection('diary')
         .orderBy('index', 'desc')
-        .startAt((pageNum - 1) * 10)
+        .startAt(pageData.lastDiaryIndex - ((pageData.pageNumber - 1) * 10))
         .limit(10)
         .get();
 
       first.forEach((doc) => {
-        diaries.push(doc.data());
+        const diaryData: {id: string} = {id: ''};
+        Object.assign(diaryData, doc.data());
+        diaryData.id = doc.id;
+        diaries.push(diaryData);
       });
       console.log('first diaries', diaries);
 
       // console.log('docNum', first.docs[0].data());
-
+      return diaries;
+    } else {
+      console.error('no logined user');
+      return null;
     }
   }
 
-  // public static async getDiaryLastIndex(): number {
-  //   const user = firebase.auth().currentUser;
-  //   let lastIndexDiary = null;
-  //   let lastDiaryIndex = null;
+  public static async getDiaryLastIndex() {
+    const user = firebase.auth().currentUser;
+    let lastDiary = null;
+    let lastDiaryIndex = null;
 
-  //   if (!_.isNil(user)) {
-  //     lastIndexDiary = await db.collection('users')
-  //                       .doc(user.uid)
-  //                       .collection('diary')
-  //                       .orderBy('index', 'desc')
-  //                       .limit(1)
-  //                       .get();
+    if (!_.isNil(user)) {
+      lastDiary = await db.collection('users')
+                        .doc(user.uid)
+                        .collection('diary')
+                        .orderBy('index', 'desc')
+                        .limit(1)
+                        .get();
 
-  //     lastDiaryIndex = lastInde.xDiary.docs[0].index;
-  //   }
-  // }
+      lastDiaryIndex = lastDiary.docs[0].data().index;
+      return lastDiaryIndex;
+    }
+    return null;
+  }
 
 
 }

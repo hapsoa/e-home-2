@@ -7,7 +7,7 @@
     <div class="diaries">
       <div
         class="diary"
-        v-for="(diary, index) in getPage"
+        v-for="(diary, index) in diaries"
         :key="diary.id"
         @click="lookDiary(diary.id)"
       >{{diary.title}}</div>
@@ -22,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import _ from 'lodash';
 import firebase from '@/firebase';
 
@@ -39,21 +40,31 @@ export default {
       this.$router.push({ name: 'diary-detail', query: { id: diaryId } });
     },
     async initializeView() {
-      const diaries: object = await firebase.database.getDiary();
-      const diaries2: object[] = await firebase.database.getDiaryPerPage(1);
+      if (_.isNil(this.$store.state.lastDiaryIndex)) {
+        await this.$store.dispatch('setLastDiaryIndex');
+      }
+
+      const diaries: object[] = await firebase.database.getDiaryPerPage({
+          pageNumber: this.page,
+          lastDiaryIndex: this.$store.state.lastDiaryIndex,
+        });
+
+      // const diaries2: object[] = await firebase.database.getDiaryPerPage(1);
       // console.log('diary2', diaries2);
 
-      const temp: object[] = [];
+      // const temp: object[] = [];
 
-      _.forEach(diaries, (value, key) => {
-        value.id = key;
-        temp.push(value);
-      });
+      // _.forEach(diaries, (value, key) => {
+      //   value.id = key;
+      //   temp.push(value);
+      // });
 
-      this.diaries = _.orderBy(temp, ['date'], ['desc']);
+      // this.diaries = _.orderBy(temp, ['date'], ['desc']);
+      this.diaries = diaries;
 
-      // console.log('diaries : ', this.diaries);
-      this.pageLength = Math.ceil(this.diaries.length / 10);
+      // this.pageLength = Math.ceil(this.diaries.length / 10);
+      this.pageLength = Math.ceil((this.$store.state.lastDiaryIndex + 1) / 10);
+
     },
   },
   computed: {
@@ -62,6 +73,14 @@ export default {
       const initNum: number = (this.page - 1) * 10;
       const pageArray: object[] = _.slice(this.diaries, initNum, initNum + 10);
       return pageArray;
+    },
+  },
+  watch: {
+    async page(to, from) {
+      this.diaries = await firebase.database.getDiaryPerPage({
+          pageNumber: to,
+          lastDiaryIndex: this.$store.state.lastDiaryIndex,
+        });
     },
   },
   async created() {
