@@ -207,6 +207,23 @@ class CloudFirestore {
     }
   }
 
+  // public static async getDiaryLastIndex(): number {
+  //   const user = firebase.auth().currentUser;
+  //   let lastIndexDiary = null;
+  //   let lastDiaryIndex = null;
+
+  //   if (!_.isNil(user)) {
+  //     lastIndexDiary = await db.collection('users')
+  //                       .doc(user.uid)
+  //                       .collection('diary')
+  //                       .orderBy('index', 'desc')
+  //                       .limit(1)
+  //                       .get();
+
+  //     lastDiaryIndex = lastInde.xDiary.docs[0].index;
+  //   }
+  // }
+
 
 }
 
