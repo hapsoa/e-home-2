@@ -2,7 +2,7 @@
 <div class="making-memo-root">
     <form>
       <label>제목</label>
-      <input type="text" v-model="diaryTitle" />
+      <input type="text" v-model="diaryTitle" :placeholder="diaryDate" />
     </form>
     <textarea v-model="diaryContents" />
     <div class="controller">
@@ -18,16 +18,21 @@ export default {
   name: 'MakingMemo',
   data() {
     return {
-      diaryTitle: new Date().toLocaleDateString(),
+      diaryTitle: '',
+      diaryDate: new Date().toLocaleDateString(),
       diaryContents: '',
     };
   },
   methods: {
     async sendDiary() {
-      console.log('textArea : ', this.diaryContents);
+      // console.log('textArea : ', this.diaryContents);
 
       if (_.isNil(this.$store.state.lastDiaryIndex)) {
         await this.$store.dispatch('setLastDiaryIndex');
+      }
+
+      if (this.diaryTitle === '') {
+        this.diaryTitle = this.diaryDate;
       }
 
       this.$firebase.database.setDiary({ 
@@ -44,24 +49,39 @@ export default {
 };
 </script>
 
-<style scoped lang="sass">
-  .making-memo-root
-    width: 100%
-    height: 100%
-    padding: 30px
-    > textarea
-      width: 100%
-      height: calc(100% - 80px)
-      border: 1px solid #aaa
-      &:focus
-        outline: none !important;
+<style scoped lang="scss">
+  .making-memo-root {
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    > form {
+      margin-bottom: 5px;
+      > label {
+        margin-right: 5px;
+      }
+      > input {
         border: 1px solid #ccc
-    > .controller
-      width: 100%
-      height: 80px
-      background: #aaa
-      text-align: center
-      > button
-        margin: 0 10px
+      }
+    }
+    > textarea {
+      width: 100%;
+      height: calc(100% - 80px);
+      border: 1px solid #aaa;
+      padding: 10px;
+      &:focus {
+        outline: none !important;
+        border: 1px solid #ccc;
+      }
+    }
+    > .controller {
+      width: 100%;
+      height: 80px;
+      background: #aaa;
+      text-align: center;
+      > button {
+        margin: 0 10px;
+      }
+    }
+  }
 
 </style>
