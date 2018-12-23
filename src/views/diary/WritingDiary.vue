@@ -4,39 +4,61 @@
       <label>제목</label>
       <input type="text" v-model="diaryTitle" :placeholder="diaryDate" />
     </form>
-    <textarea v-model="diaryContents" />
+    <div class="editors">
+      <div class="editor-type">
+        <v-btn @click="editorType='normal-editor'">일반 에디터</v-btn>
+        <v-btn @click="editorType='ckeditor'">ck editor</v-btn>
+        <v-btn>slide</v-btn>
+        <v-btn @click="showCkeditorContents">contents console</v-btn>
+      </div>
+      <textarea v-if="editorType === 'normal-editor'" v-model="diaryContents" />
+      <ckeditor v-if="editorType === 'ckeditor'" :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+    </div>
     <div class="controller">
-      <button type="button" @click="$router.go(-1)">취소</button>
+      <v-btn @click="$router.go(-1)" :flat="true">취소</v-btn>
         <!-- 데이터베이스에 메모 내용을 저장시키고, 해당 내용을 보여 준다.-->
-        <button type="button" @click="sendDiary()">저장</button>
-        </div>
+      <v-btn @click="sendDiary()" :flat="true">저장</v-btn>
+    </div>
 </div>
 </template>
 
-<script>
+<script lang="ts">
+import _ from 'lodash';
+import firebase from '@/firebase';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 export default {
   name: 'MakingMemo',
+  components: {
+    // Use the <ckeditor> component in this view.
+    // ckeditor: CKEditor.component
+  },
   data() {
     return {
       diaryTitle: '',
-      diaryDate: new Date().toLocaleDateString(),
+      diaryDate: new Date().toLocaleDateString() + '(시간포함)',
       diaryContents: '',
+      editor: ClassicEditor,
+      editorData: '<p>Content of the editor.</p>',
+      editorConfig: {
+          // The configuration of the editor.
+      },
+      editorType: 'ckeditor', // normal-editor, ckeditor, slide
     };
   },
   methods: {
     async sendDiary() {
       // console.log('textArea : ', this.diaryContents);
-
       if (_.isNil(this.$store.state.lastDiaryIndex)) {
         await this.$store.dispatch('setLastDiaryIndex');
       }
 
       if (this.diaryTitle === '') {
-        this.diaryTitle = this.diaryDate;
+        this.diaryTitle = new Date().toLocaleString();
       }
 
-      this.$firebase.database.setDiary({ 
-        title: this.diaryTitle, 
+      firebase.database.setDiary({
+        title: this.diaryTitle,
         contents: this.diaryContents,
         index: this.$store.state.lastDiaryIndex + 1,
       });
@@ -44,6 +66,9 @@ export default {
       this.$store.commit('addLastDiaryIndex');
 
       this.$router.push({ name: 'diary' });
+    },
+    showCkeditorContents() {
+      console.log(this.editorData);
     },
   },
 };
@@ -60,17 +85,19 @@ export default {
         margin-right: 5px;
       }
       > input {
-        border: 1px solid #ccc
+        border: 1px solid #ccc;
       }
     }
-    > textarea {
-      width: 100%;
-      height: calc(100% - 80px);
-      border: 1px solid #aaa;
-      padding: 10px;
-      &:focus {
-        outline: none !important;
-        border: 1px solid #ccc;
+    .editors {
+      > textarea {
+        width: 100%;
+        height: calc(100% - 80px);
+        border: 1px solid #aaa;
+        padding: 10px;
+        &:focus {
+          outline: none !important;
+          border: 1px solid #ccc;
+        }
       }
     }
     > .controller {

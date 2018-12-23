@@ -84,6 +84,9 @@
 import Vue from 'vue';
 import _ from 'lodash';
 import firebase from './firebase';
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
+Vue.use( CKEditor );
 
 Vue.prototype.$_ = _;
 Vue.prototype.$firebase = firebase;

@@ -116,13 +116,6 @@ class CloudFirestore {
         .doc(user.uid)
         .collection('diary');
       try {
-        // const querySnapshot = await db.collection('users')
-        //                                   .doc(user.uid)
-        //                                   .collection('diary')
-        //                                   .orderBy('index', 'desc')
-        //                                   .limit(1)
-        //                                   .get();
-        // const index: number = querySnapshot.docs[0].data().index + 1;
         const docRef = await ref.add({
           title: diaryData.title,
           contents: diaryData.contents,
@@ -187,10 +180,8 @@ class CloudFirestore {
     const user = firebase.auth().currentUser;
     const diaries: object[] = [];
 
-    console.log('pageNumber', pageData.pageNumber);
-    console.log('lastDiaryIndex', pageData.lastDiaryIndex);
     if (!_.isNil(user)) {
-      const first = await db.collection('users')
+      const diaryFromDb = await db.collection('users')
         .doc(user.uid)
         .collection('diary')
         .orderBy('index', 'desc')
@@ -198,15 +189,13 @@ class CloudFirestore {
         .limit(10)
         .get();
 
-      first.forEach((doc) => {
+      diaryFromDb.forEach((doc) => {
         const diaryData: {id: string} = {id: ''};
         Object.assign(diaryData, doc.data());
         diaryData.id = doc.id;
         diaries.push(diaryData);
       });
-      console.log('first diaries', diaries);
-
-      // console.log('docNum', first.docs[0].data());
+      // console.log('diaryFromDb diaries', diaries);
       return diaries;
     } else {
       console.error('no logined user');
