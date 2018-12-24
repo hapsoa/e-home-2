@@ -38,32 +38,56 @@ export default {
       diaryTitle: '',
       diaryDate: new Date().toLocaleDateString() + '(시간포함)',
       diaryContents: '',
+
       editor: ClassicEditor,
       editorData: '<p>Content of the editor.</p>',
       editorConfig: {
           // The configuration of the editor.
       },
+
       editorType: 'ckeditor', // normal-editor, ckeditor, slide
     };
   },
   methods: {
+    /**
+     * db로 diary 정보 보내기
+     */
     async sendDiary() {
-      // console.log('textArea : ', this.diaryContents);
+      // 마지막 index를 가지고 있는지 확인
       if (_.isNil(this.$store.state.lastDiaryIndex)) {
         await this.$store.dispatch('setLastDiaryIndex');
       }
 
+      // 일기제목 확인
       if (this.diaryTitle === '') {
         this.diaryTitle = new Date().toLocaleString();
       }
 
-      firebase.database.setDiary({
-        title: this.diaryTitle,
-        contents: this.diaryContents,
-        index: this.$store.state.lastDiaryIndex + 1,
-      });
+      try {
+        // 무슨 에디터를 사용하는지
+        if (this.editorType === 'normal-editor') {
+            firebase.database.setDiary({
+              title: this.diaryTitle,
+              contents: this.diaryContents,
+              index: this.$store.state.lastDiaryIndex + 1,
+            });
+            this.$store.commit('addLastDiaryIndex');
+        } else if (this.editorType === 'ckeditor') {
+            firebase.database.setDiary({
+              title: this.diaryTitle,
+              contents: this.editorData,
+              index: this.$store.state.lastDiaryIndex + 1,
+            });
+            this.$store.commit('addLastDiaryIndex');
+        }
+        // else if (this.editorType === 'slide') {
 
-      this.$store.commit('addLastDiaryIndex');
+        // }
+      } catch (error) {
+          console.error(error);
+      }
+
+
 
       this.$router.push({ name: 'diary' });
     },
@@ -91,7 +115,7 @@ export default {
     .editors {
       > textarea {
         width: 100%;
-        height: calc(100% - 80px);
+        height: 500px;
         border: 1px solid #aaa;
         padding: 10px;
         &:focus {

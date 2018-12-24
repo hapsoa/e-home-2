@@ -125,9 +125,11 @@ class CloudFirestore {
         console.log('Document written with ID: ', docRef.id);
       } catch (error) {
         console.error('Error adding document: ', error);
+        throw new Error('setDiary error');
       }
     } else {
       console.error('do not have user');
+      throw new Error('setDiary error');
     }
   }
 
