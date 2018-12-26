@@ -1,7 +1,15 @@
 <template>
   <div class="diary-detail">
+    <div class="crud-button-zone">
+      <v-btn flat icon color="#aaa">
+        <v-icon>create</v-icon>
+      </v-btn>
+      <v-btn flat icon color="#aaa">
+        <v-icon>delete</v-icon>
+      </v-btn>
+    </div>
     <div class="detail-view" v-html="diaryData.contents"></div>
-    <v-btn color="#bbb" @click="$router.go(-1)">돌아가기</v-btn>
+    <v-btn color="#bbb" @click="$router.go(-1)">돌아가기</v-btn>      
   </div>
 </template>
 
@@ -43,6 +51,10 @@ export default {
 .diary-detail {
   width: 100%;
   // height: 100%;
+  > .crud-button-zone {
+    display: flex;
+    justify-content: flex-end;
+  }
   > .detail-view {
     min-height: 500px;
     margin: 30px;
