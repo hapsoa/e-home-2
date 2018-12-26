@@ -1,10 +1,10 @@
 <template>
   <div class="diary-detail">
     <div class="crud-button-zone">
-      <v-btn flat icon color="#aaa">
+      <v-btn flat icon color="#aaa" @click="reviseDiary">
         <v-icon>create</v-icon>
       </v-btn>
-      <v-btn flat icon color="#aaa">
+      <v-btn flat icon color="#aaa" @click="deleteDiary">
         <v-icon>delete</v-icon>
       </v-btn>
     </div>
@@ -35,6 +35,12 @@ export default {
     async initializeView() {
       this.diaryData = await this.$firebase.database.getDiary(this.id);
       this.diaryData.contents = this.diaryData.contents.split(/\n|\r|↵/).join('<br>');
+    },
+    reviseDiary() {
+      console.log('devise diary');
+    },
+    deleteDiary() {
+
     }
   },
   created() {
