@@ -41,7 +41,8 @@ export default {
       this.$router.push({name: 'writing-diary'});
     },
     deleteDiary() {
-
+      console.log('delete diary');
+      firebase.database.deleteDiary(this.id);
     }
   },
   created() {

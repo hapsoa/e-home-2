@@ -224,6 +224,10 @@ class CloudFirestore {
     return null;
   }
 
+  // tslint:disable-next-line:no-empty
+  public static async deleteDiary(id: string) {
+
+  }
 
 }
 
