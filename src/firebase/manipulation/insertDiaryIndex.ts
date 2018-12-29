@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import firebase from './initializingFirebase';
+import firebase from '../initializingFirebase';
 
 const db = firebase.firestore();
 const settings = {

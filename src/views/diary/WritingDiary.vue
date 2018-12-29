@@ -40,7 +40,7 @@ export default {
       diaryContents: '',
 
       editor: ClassicEditor,
-      editorData: '<p>Content of the editor.</p>',
+      editorData: '',
       editorConfig: {
           // The configuration of the editor.
       },
@@ -63,30 +63,34 @@ export default {
         this.diaryTitle = new Date().toLocaleString();
       }
 
-      try {
-        // 무슨 에디터를 사용하는지
-        if (this.editorType === 'normal-editor') {
-            firebase.database.setDiary({
-              title: this.diaryTitle,
-              contents: this.diaryContents,
-              index: this.$store.state.lastDiaryIndex + 1,
-            });
-            this.$store.commit('addLastDiaryIndex');
-        } else if (this.editorType === 'ckeditor') {
-            firebase.database.setDiary({
-              title: this.diaryTitle,
-              contents: this.editorData,
-              index: this.$store.state.lastDiaryIndex + 1,
-            });
-            this.$store.commit('addLastDiaryIndex');
+      // 새로 글 쓰는 상황일 때
+      if (_.isNil(this.$route.query.diaryData)) {
+        try {
+          // 무슨 에디터를 사용하는지
+          if (this.editorType === 'normal-editor') {
+              firebase.database.setDiary({
+                title: this.diaryTitle,
+                contents: this.diaryContents,
+                index: this.$store.state.lastDiaryIndex + 1,
+              });
+              this.$store.commit('addLastDiaryIndex');
+          } else if (this.editorType === 'ckeditor') {
+              firebase.database.setDiary({
+                title: this.diaryTitle,
+                contents: this.editorData,
+                index: this.$store.state.lastDiaryIndex + 1,
+              });
+              this.$store.commit('addLastDiaryIndex');
+          }
+          // else if (this.editorType === 'slide') {
+
+          // }
+        } catch (error) {
+            console.error(error);
         }
-        // else if (this.editorType === 'slide') {
+      } else { // 수정하는 상황일 때
 
-        // }
-      } catch (error) {
-          console.error(error);
       }
-
 
 
       this.$router.push({ name: 'diary' });
@@ -94,6 +98,18 @@ export default {
     showCkeditorContents() {
       console.log(this.editorData);
     },
+  },
+  created() {
+    console.log('query : ', this.$route.query.diaryData);
+
+    if (!_.isNil(this.$route.query.diaryData)) {
+      console.log('data exist');
+      this.diaryTitle = this.$route.query.diaryData.title;
+      this.editorData = this.$route.query.diaryData.contents;
+      this.editorType = this.$route.query.diaryData.type;
+    } else {
+      console.log('data not exist');
+    }
   },
 };
 </script>
