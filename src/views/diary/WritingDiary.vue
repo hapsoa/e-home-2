@@ -89,7 +89,11 @@ export default {
             console.error(error);
         }
       } else { // 수정하는 상황일 때
-
+        if (this.editorType === 'normal-editor') {
+          // firebase.database.reviseDiary(this.$route.query.diaryId);
+        } else if (this.editorType === 'ckeditor') {
+          // ckeditor
+        }
       }
 
 

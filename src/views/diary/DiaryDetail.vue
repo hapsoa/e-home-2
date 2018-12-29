@@ -39,7 +39,8 @@ export default {
     reviseDiary() {
       console.log('devise diary');
       this.$router.push({name: 'writing-diary', query: {
-        diaryData: this.diaryData
+        diaryData: this.diaryData,
+        diaryId: this.id,
       }});
     },
     deleteDiary() {
