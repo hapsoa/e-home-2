@@ -3,10 +3,10 @@
     <div class="crud-button-zone">
       <v-btn flat icon color="#aaa" @click="reviseDiary">
         <v-icon>create</v-icon>
-      </v-btn>
-      <v-btn flat icon color="#aaa" @click="deleteDiary">
-        <v-icon>delete</v-icon>
-      </v-btn>
+      </v-btn>      
+      <icon-modal :cardTitle="'일기 삭제'" 
+        :cardText="'일기를 삭제하시겠습니까? 삭제를 하시면 복원할 수 없습니다.'" 
+        :agreeListener="deleteDiary"/>
     </div>
     <div class="detail-view" v-html="diaryData.contents"></div>
     <v-btn color="#bbb" @click="$router.go(-1)">돌아가기</v-btn>      
@@ -16,19 +16,18 @@
 <script lang="ts">
 import _ from 'lodash';
 import firebase from '@/firebase';
+import IconModal from '@/components/IconModal.vue';
 
 export default {
   name: 'DiaryDetail',
-  // props: {
-  //   id: {
-  //     type: String,
-  //     required: true,
-  //   },
-  // },
+  components: {
+    IconModal,
+  },
   data(): any {
     return {
       id: this.$route.query.id,
       diaryData: {},
+      dialog: false,
     };
   },
   methods: {
@@ -45,7 +44,7 @@ export default {
     },
     deleteDiary() {
       console.log('delete diary');
-      firebase.database.deleteDiary(this.id);
+      // firebase.database.deleteDiary(this.id);
     },
   },
   created() {
