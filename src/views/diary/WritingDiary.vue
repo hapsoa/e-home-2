@@ -93,6 +93,11 @@ export default {
           // firebase.database.reviseDiary(this.$route.query.diaryId);
         } else if (this.editorType === 'ckeditor') {
           // ckeditor
+          firebase.database.reviseDiary({
+            id: this.$route.query.diaryId as string,
+            title: this.diaryTitle,
+            contents: this.editorData,
+          });
         }
       }
 

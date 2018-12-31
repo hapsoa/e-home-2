@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash';
 import firebase from '@/firebase';
 
@@ -25,7 +25,7 @@ export default {
   //     required: true,
   //   },
   // },
-  data() {
+  data(): any {
     return {
       id: this.$route.query.id,
       diaryData: {},
@@ -41,12 +41,12 @@ export default {
       this.$router.push({name: 'writing-diary', query: {
         diaryData: this.diaryData,
         diaryId: this.id,
-      }});
+      } as any});
     },
     deleteDiary() {
       console.log('delete diary');
       firebase.database.deleteDiary(this.id);
-    }
+    },
   },
   created() {
     if (!_.isNil(firebase.auth.getCurrentUser())) {

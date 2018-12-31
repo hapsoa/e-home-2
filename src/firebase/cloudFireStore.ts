@@ -107,7 +107,7 @@ class CloudFirestore {
     }
   }
 
-  public static async setDiary(diaryData: { title: string; contents: string, index: number }) {
+  public static async setDiary(diaryData: { title: string, contents: string, index: number }) {
     const user = firebase.auth().currentUser;
 
     if (!_.isNil(user)) {
@@ -222,6 +222,30 @@ class CloudFirestore {
       return lastDiaryIndex;
     }
     return null;
+  }
+
+  public static async reviseDiary(diaryData: { id: string, title: string, contents: string }) {
+    const user = firebase.auth().currentUser;
+
+    if (!_.isNil(user)) {
+      const ref = db
+        .collection('users')
+        .doc(user.uid)
+        .collection('diary')
+        .doc(diaryData.id) as any;
+
+      ref.update({
+        title: diaryData.title,
+        contents: diaryData.contents,
+      })
+      .then(() => {
+          console.log('Diary successfully updated!');
+      })
+      .catch((error) => {
+          // The document probably doesn't exist.
+          console.error('Error updating diary: ', error);
+      });
+    }
   }
 
   // tslint:disable-next-line:no-empty
