@@ -23,15 +23,15 @@ export default {
   props: {
     buttonIcon: {
       type: String,
-      default: 'delete,',
+      default: 'delete',
     },
     cardTitle: {
       type: String,
-      default: '제목,',
+      default: '제목',
     },
     cardText: {
       type: String,
-      default: '내용이 들어가는 부분입니다.,',
+      default: '내용이 들어가는 부분입니다.',
     },
     agreeListener: {
         type: Function,

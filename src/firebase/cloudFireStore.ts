@@ -107,7 +107,11 @@ class CloudFirestore {
     }
   }
 
-  public static async setDiary(diaryData: { title: string, contents: string, index: number }) {
+  public static async setDiary(diaryData: {
+    title: string;
+    contents: string;
+    index: number;
+  }) {
     const user = firebase.auth().currentUser;
 
     if (!_.isNil(user)) {
@@ -177,22 +181,25 @@ class CloudFirestore {
     return null;
   }
 
-  public static async getDiaryPerPage(pageData
-    : {pageNumber: number, lastDiaryIndex: number}): object[] {
+  public static async getDiaryPerPage(pageData: {
+    pageNumber: number;
+    lastDiaryIndex: number;
+  }): object[] {
     const user = firebase.auth().currentUser;
     const diaries: object[] = [];
 
     if (!_.isNil(user)) {
-      const diaryFromDb = await db.collection('users')
+      const diaryFromDb = await db
+        .collection('users')
         .doc(user.uid)
         .collection('diary')
         .orderBy('index', 'desc')
-        .startAt(pageData.lastDiaryIndex - ((pageData.pageNumber - 1) * 10))
+        .startAt(pageData.lastDiaryIndex - (pageData.pageNumber - 1) * 10)
         .limit(10)
         .get();
 
       diaryFromDb.forEach((doc) => {
-        const diaryData: {id: string} = {id: ''};
+        const diaryData: { id: string } = { id: '' };
         Object.assign(diaryData, doc.data());
         diaryData.id = doc.id;
         diaries.push(diaryData);
@@ -211,12 +218,13 @@ class CloudFirestore {
     let lastDiaryIndex = null;
 
     if (!_.isNil(user)) {
-      lastDiary = await db.collection('users')
-                        .doc(user.uid)
-                        .collection('diary')
-                        .orderBy('index', 'desc')
-                        .limit(1)
-                        .get();
+      lastDiary = await db
+        .collection('users')
+        .doc(user.uid)
+        .collection('diary')
+        .orderBy('index', 'desc')
+        .limit(1)
+        .get();
 
       lastDiaryIndex = lastDiary.docs[0].data().index;
       return lastDiaryIndex;
@@ -224,7 +232,11 @@ class CloudFirestore {
     return null;
   }
 
-  public static async reviseDiary(diaryData: { id: string, title: string, contents: string }) {
+  public static async reviseDiary(diaryData: {
+    id: string;
+    title: string;
+    contents: string;
+  }) {
     const user = firebase.auth().currentUser;
 
     if (!_.isNil(user)) {
@@ -234,25 +246,39 @@ class CloudFirestore {
         .collection('diary')
         .doc(diaryData.id) as any;
 
-      ref.update({
-        title: diaryData.title,
-        contents: diaryData.contents,
-      })
-      .then(() => {
+      ref
+        .update({
+          title: diaryData.title,
+          contents: diaryData.contents,
+        })
+        .then(() => {
           console.log('Diary successfully updated!');
-      })
-      .catch((error) => {
+        })
+        .catch((error) => {
           // The document probably doesn't exist.
           console.error('Error updating diary: ', error);
-      });
+        });
     }
   }
 
-  // tslint:disable-next-line:no-empty
   public static async deleteDiary(id: string) {
+    const user = firebase.auth().currentUser;
 
+    if (!_.isNil(user)) {
+      const ref = db
+        .collection('users')
+        .doc(user.uid)
+        .collection('diary')
+        .doc(id);
+
+      try {
+        await ref.delete();
+        console.log('Diary successfully deleted!');
+      } catch (error) {
+        throw error;
+      }
+    }
   }
-
 }
 
 // const database = new CloudFirestore();

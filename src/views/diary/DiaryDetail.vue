@@ -6,7 +6,7 @@
       </v-btn>      
       <icon-modal :cardTitle="'일기 삭제'" 
         :cardText="'일기를 삭제하시겠습니까? 삭제를 하시면 복원할 수 없습니다.'" 
-        :agreeListener="deleteDiary"/>
+        :agreeListener="deleteDiary" />
     </div>
     <div class="detail-view" v-html="diaryData.contents"></div>
     <v-btn color="#bbb" @click="$router.go(-1)">돌아가기</v-btn>      
@@ -42,9 +42,13 @@ export default {
         diaryId: this.id,
       } as any});
     },
-    deleteDiary() {
-      console.log('delete diary');
-      // firebase.database.deleteDiary(this.id);
+    async deleteDiary() {
+      try {
+        await firebase.database.deleteDiary(this.id);
+        this.$router.push({name: 'diary'});
+      } catch (error) {
+        console.error('Error removing diary: ', error);
+      }
     },
   },
   created() {

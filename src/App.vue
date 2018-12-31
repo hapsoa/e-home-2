@@ -96,7 +96,7 @@ export default {
   components: {
 
   },
-  data() {
+  data(): any {
     return {
       drawer: null,
     };
