@@ -184,7 +184,7 @@ class CloudFirestore {
   public static async getDiaryPerPage(pageData: {
     pageNumber: number;
     lastDiaryIndex: number;
-  }): object[] {
+  }) {
     const user = firebase.auth().currentUser;
     const diaries: object[] = [];
 
@@ -254,7 +254,7 @@ class CloudFirestore {
         .then(() => {
           console.log('Diary successfully updated!');
         })
-        .catch((error) => {
+        .catch((error: any) => {
           // The document probably doesn't exist.
           console.error('Error updating diary: ', error);
         });

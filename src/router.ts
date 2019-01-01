@@ -51,5 +51,10 @@ export default new Router({
       name: 'diary-detail',
       component: () => import('./views/diary/DiaryDetail.vue'),
     },
+    {
+      path: '/ppt-test',
+      name: 'ppt-test',
+      component: () => import('../test-code/ppt-test.vue'),
+    },
   ],
 });
