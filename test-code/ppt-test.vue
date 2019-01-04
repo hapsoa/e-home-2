@@ -41,10 +41,17 @@
         </v-btn-toggle>
       </v-toolbar>
     </div>
-    <svg width="800" height="700" :draw="isDrawing" @mousedown="startDrawing" @click="drawRect">
+    <svg width="800" height="700" :draw="drawingMode" 
+      @mousedown="startDrawing" @mouseup="drawRect" @mousemove="supportRect">
       <!-- <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow"></circle> -->
-      <rect v-show="isDrawing" :x="startX.x" :y="startY.y" :width="assistRect.width" :height="assistRect.height"
-        style="fill:rgba(0,0,0,0);stroke:blue;stroke-width:2;stroke-opacity:0.9"></rect>
+      <rect
+        v-show="isDrawing"
+        :x="assistRect.x"
+        :y="assistRect.y"
+        :width="assistRect.width"
+        :height="assistRect.height"
+        style="fill:rgba(0,0,0,0);stroke:blue;stroke-width:2;stroke-opacity:0.9"
+      ></rect>
       <rect
         v-for="(rect, index) in rects"
         :key="index"
@@ -64,6 +71,7 @@ export default {
     return {
       toggle_exclusive: 2,
       menu: false,
+      drawingMode: false,
       isDrawing: false,
       // 좌표
       startX: 0,
@@ -71,6 +79,8 @@ export default {
       // 네모
       rects: [] as object[],
       assistRect: {
+        x: 0,
+        y: 0,
         width: 0,
         height: 0,
       },
@@ -81,19 +91,24 @@ export default {
       console.log('yop');
     },
     drawMode() {
-      this.isDrawing = true;
+      this.drawingMode = true;
     },
     startDrawing(event: any) {
-      this.startX = event.offsetX;
-      this.startY = event.offsetY;
-      console.log('startX, Y : ', this.startX, this.startY);
+      if (this.drawingMode === true) {
+        this.startX = event.offsetX;
+        this.startY = event.offsetY;
+        console.log('startX, Y : ', this.startX, this.startY);
+        this.isDrawing = true;
+      }
     },
     drawRect(event: any) {
       if (this.isDrawing === true) {
         // 네모를 그린다.
         // 마우스 클릭시와 뗄시의 좌표를 알아야 한다.
-        const x: number = this.startX <= event.offsetX ? this.startX : event.offsetX;
-        const y: number = this.startY <= event.offsetY ? this.startY : event.offsetY;
+        const x: number =
+          this.startX <= event.offsetX ? this.startX : event.offsetX;
+        const y: number =
+          this.startY <= event.offsetY ? this.startY : event.offsetY;
 
         this.rects.push({
           x,
@@ -101,8 +116,22 @@ export default {
           width: Math.abs(event.offsetX - this.startX),
           height: Math.abs(event.offsetY - this.startY),
         });
-
+        this.drawingMode = false;
         this.isDrawing = false;
+      }
+    },
+    supportRect(event: any) {
+      if (this.isDrawing === true) {
+        const x: number =
+          this.startX <= event.offsetX ? this.startX : event.offsetX;
+        const y: number =
+          this.startY <= event.offsetY ? this.startY : event.offsetY;
+        console.log('x, y: ', x, y);
+
+        this.assistRect.x = x;
+        this.assistRect.y = y;
+        this.assistRect.width = Math.abs(event.offsetX - this.startX);
+        this.assistRect.height = Math.abs(event.offsetY - this.startY);
       }
     },
     // 보조 그리기를 해야 한다.
