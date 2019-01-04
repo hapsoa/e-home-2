@@ -43,7 +43,7 @@
     </div>
     <svg width="800" height="700" :draw="isDrawing" @mousedown="startDrawing" @click="drawRect">
       <!-- <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow"></circle> -->
-      <rect v-show="isDrawing" :x="assistRect.x" :y="assistRect.y" :width="assistRect.width" :height="assistRect.height"
+      <rect v-show="isDrawing" :x="startX.x" :y="startY.y" :width="assistRect.width" :height="assistRect.height"
         style="fill:rgba(0,0,0,0);stroke:blue;stroke-width:2;stroke-opacity:0.9"></rect>
       <rect
         v-for="(rect, index) in rects"
@@ -71,8 +71,6 @@ export default {
       // 네모
       rects: [] as object[],
       assistRect: {
-        x: 0,
-        y: 0,
         width: 0,
         height: 0,
       },
@@ -89,8 +87,6 @@ export default {
       this.startX = event.offsetX;
       this.startY = event.offsetY;
       console.log('startX, Y : ', this.startX, this.startY);
-      this.assistRect.x = event.offsetX;
-      this.assistRect.y = event.offsetY;
     },
     drawRect(event: any) {
       if (this.isDrawing === true) {
@@ -109,6 +105,7 @@ export default {
         this.isDrawing = false;
       }
     },
+    // 보조 그리기를 해야 한다.
   },
 };
 </script>
