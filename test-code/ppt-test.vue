@@ -3,7 +3,7 @@
     <div class="ppt-menu">
       <v-toolbar>
         <v-menu offset-y>
-          <v-btn flat slot="activator">
+          <v-btn flat slot="activator" ref="shapes">
             <v-icon>crop_din</v-icon>
           </v-btn>
           <v-list>
@@ -50,7 +50,7 @@
         :y="assistRect.y"
         :width="assistRect.width"
         :height="assistRect.height"
-        style="fill:rgba(0,0,0,0);stroke:blue;stroke-width:2;stroke-opacity:0.9"
+        style="fill:rgba(0,0,0,0);stroke:skyblue;stroke-width:2;stroke-opacity:0.9"
       ></rect>
       <rect
         v-for="(rect, index) in rects"
@@ -92,6 +92,7 @@ export default {
     },
     drawMode() {
       this.drawingMode = true;
+      this.$refs.shapes.$el.click();
     },
     startDrawing(event: any) {
       if (this.drawingMode === true) {
@@ -142,6 +143,7 @@ export default {
 <style scoped lang="scss">
 .ppt-root {
   svg {
+    border: 1px solid #ccc;
     &[draw] {
       cursor: crosshair;
     }
