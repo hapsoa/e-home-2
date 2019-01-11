@@ -9,7 +9,7 @@ const settings = {
 db.settings(settings);
 
 class CloudFirestore {
-  public static loginUser(user: { uid: string }) {
+  public static loginUser(user) {
     db.collection('users')
       .doc(user.uid)
       .set({
@@ -214,7 +214,7 @@ class CloudFirestore {
 
   public static async getDiaryLastIndex() {
     const user = firebase.auth().currentUser;
-    let lastDiary = null;
+    let lastDiary;
     let lastDiaryIndex = null;
 
     if (!_.isNil(user)) {
@@ -229,7 +229,7 @@ class CloudFirestore {
       lastDiaryIndex = lastDiary.docs[0].data().index;
       return lastDiaryIndex;
     }
-    return null;
+    return -1;
   }
 
   public static async reviseDiary(diaryData: {

@@ -9,9 +9,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     isLogin: false,
-    savedMethods: [],
+    savedMethods: [] as any,
     isLoading: true,
-    lastDiaryIndex: null,
+    lastDiaryIndex: -1,
   },
   mutations: {
     login(state) {
@@ -39,7 +39,7 @@ export default new Vuex.Store({
       console.log('loading end');
     },
     addLastDiaryIndex(state) {
-      if (_.isNumber(state.lastDiaryIndex)) {
+      if (state.lastDiaryIndex !== -1) {
         state.lastDiaryIndex += 1;
         console.log('success addLastIndex');
       }
@@ -47,7 +47,7 @@ export default new Vuex.Store({
   },
   actions: {
     async setLastDiaryIndex(context) {
-      context.state.lastDiaryIndex = await firebase.database.getDiaryLastIndex();
+      context.state.lastDiaryIndex = (await firebase.database.getDiaryLastIndex()) as number;
 
       console.log('setted lastIndex: ', context.state.lastDiaryIndex);
     },

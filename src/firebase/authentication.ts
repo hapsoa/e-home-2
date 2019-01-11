@@ -5,24 +5,27 @@ import database from './cloudFireStore';
 const provider = new firebase.auth.GoogleAuthProvider();
 
 class Authentication {
-  private userOnlineListener: null;
-  private userOfflineListener: null;
-  private logoutListener: null;
+  private userOnlineListener;
+  private userOfflineListener;
+  private logoutListener;
   constructor() {
-    firebase.auth()
-      .onAuthStateChanged((user) => {
-        console.log('current user : ', user);
-        if (user) {
-          // User is signed in.
-          // this.router.push('/');
-          if (!_.isNil(this.userOnlineListener)) { this.userOnlineListener(); }
-        } else {
-          // No user is signed in.
-          // this.router.push('/login');
-          // eslint-disable-next-line no-lonely-if
-          if (!_.isNil(this.userOfflineListener)) { this.userOfflineListener(); }
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log('current user : ', user);
+      if (user) {
+        // User is signed in.
+        // this.router.push('/');
+        if (!_.isNil(this.userOnlineListener)) {
+          this.userOnlineListener();
         }
-      });
+      } else {
+        // No user is signed in.
+        // this.router.push('/login');
+        // eslint-disable-next-line no-lonely-if
+        if (!_.isNil(this.userOfflineListener)) {
+          this.userOfflineListener();
+        }
+      }
+    });
   }
 
   public setUserOnlineListener(listener) {
@@ -35,13 +38,12 @@ class Authentication {
 
   public async login() {
     try {
-      const result = await firebase.auth()
-        .signInWithPopup(provider);
+      const result = await firebase.auth().signInWithPopup(provider);
       console.log('google login');
       // This gives you a Google Access Token. You can use it to access the Google API.
-      const token = result.credential.accessToken;
+      // const token = result.credential.accessToken;
       // The signed-in user info.
-      const user = result.user;
+      const user: object = result.user as object;
 
       database.loginUser(user);
     } catch (error) {
@@ -58,12 +60,15 @@ class Authentication {
   }
 
   public logout() {
-    firebase.auth()
+    firebase
+      .auth()
       .signOut()
       .then(() => {
         // Sign-out successful.
         console.log('logout complete');
-        if (!_.isNil(this.logoutListener)) { this.logoutListener(); }
+        if (!_.isNil(this.logoutListener)) {
+          this.logoutListener();
+        }
       })
       .catch((error) => {
         // An error happened.

@@ -11,9 +11,9 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "types": [
-      "webpack-env",
-      "@ckeditor"
+      "webpack-env"
     ],
     "paths": {
       "@/*": [
@@ -25,7 +25,9 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "noImplicitAny": false,
+    "noImplicitThis": false
   },
   "include": [
     "src/**/*.ts",
