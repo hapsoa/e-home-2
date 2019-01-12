@@ -9,4 +9,9 @@ export default [
     name: 'text-editor',
     component: () => import('@/components/TextEditor/TextEditor.vue'),
   },
+  {
+    path: '/test-move-file',
+    name: 'test-move-file',
+    component: () => import('@/../test-code/test-move-file/test-move-file.vue'),
+  },
 ];

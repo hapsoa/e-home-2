@@ -9,7 +9,6 @@ class MyUploadAdapter {
   private loader;
   private url: string;
   private xhr;
-  private fileArray: object[];
 
   constructor(loader, url) {
     // The FileLoader instance to use during the upload. It sounds scary but do not
@@ -19,8 +18,6 @@ class MyUploadAdapter {
     // The upload URL in your server back-end. This is the address the XMLHttpRequest
     // will send the image data to.
     this.url = url;
-
-    this.fileArray = [];
   }
 
   // Starts the upload process.
@@ -30,7 +27,7 @@ class MyUploadAdapter {
     // downloadUrl = await firebase.storage.ref.put(File);
     // downloadU
     console.log('file', this.loader.id);
-    const fileRef = storageRef.child(`jaejong/${this.loader.id}`);
+    const fileRef = storageRef.child(`diary-temp/${this.loader.id}`);
 
     const snapshot = await fileRef.put(this.loader.file);
     console.log('Uploaded a blob or file!');
@@ -38,6 +35,21 @@ class MyUploadAdapter {
 
     const url = await fileRef.getDownloadURL();
     console.log('url', url);
+
+    // `url` is the download URL for 'images/stars.jpg'
+    // This can be downloaded directly:
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = (event) => {
+      const blob = xhr.response;
+    };
+    xhr.open('GET', url);
+    xhr.send();
+    console.log('send');
+
+    // Or inserted into an <img> element:
+    // var img = document.getElementById('myimg');
+    // img.src = url;
 
     return new Promise((resolve, reject) => {
       //   this._initRequest();
@@ -121,15 +133,8 @@ class MyUploadAdapter {
     const data = new FormData();
     data.append('upload', this.loader.file);
 
-    this.fileArray.push(this.loader.file);
-
-    await storage
-      .ref()
-      .child('ssasdf')
-      .put(this.loader.file);
-
     // Send the request.
-    // this.xhr.send( data );
+    this.xhr.send(data);
   }
 }
 

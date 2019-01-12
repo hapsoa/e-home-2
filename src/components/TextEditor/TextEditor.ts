@@ -7,7 +7,6 @@ const storageRef = storage.ref();
 import MyCustomUploadAdapterPlugin from '@/components/TextEditor/MyUploadAdapter';
 
 // import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -53,9 +52,9 @@ export default {
 
         //   resolve();
         // }, HTTP_SERVER_LAG);
-        const fileRef = storageRef.child(`jaejong/asdf`);
+        const fileRef = storageRef.child(`diary-temp/temp-diary-html`);
         fileRef.putString(data).then((snapshot) => {
-          console.log('Uploaded a blob or file!');
+          console.log('Uploaded html string!');
           resolve();
         });
       });
