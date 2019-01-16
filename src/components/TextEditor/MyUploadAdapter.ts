@@ -25,7 +25,7 @@ class MyUploadAdapter {
     // return await storage.ref().child('asllldf').put(this.loader.file);
 
     // downloadUrl = await firebase.storage.ref.put(File);
-    // downloadU
+
     console.log('file', this.loader.id);
     const fileRef = storageRef.child(`diary-temp/${this.loader.id}`);
 

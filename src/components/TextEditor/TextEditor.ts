@@ -49,7 +49,6 @@ export default {
       return new Promise((resolve) => {
         // setTimeout(() => {
         //   console.log('Saved', data);
-
         //   resolve();
         // }, HTTP_SERVER_LAG);
         const fileRef = storageRef.child(`diary-temp/temp-diary-html`);
