@@ -72,7 +72,6 @@
     </v-navigation-drawer>
 
     <v-content>
-      <!-- <HelloWorld/> -->
       <router-view />
     </v-content>
   </v-app>
